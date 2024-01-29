@@ -76,7 +76,7 @@
 
       // UPDATED
       function requestSuggestions(query, fetchOptions) {
-        return fetch('./suggestions.json', fetchOptions)
+        return fetch(`./suggestions.json?query=${query}`, fetchOptions)
           .then(response => response.json())
       }
 
@@ -146,10 +146,8 @@
       let abortController;
       function abortExisting(fn) {
         return function(...args) {
-
           if (abortController) {
             abortController.abort();
-            abortController = null;
           }
 
           abortController = new AbortController();
@@ -159,8 +157,8 @@
               abortController = null;
               return result;
             }, error => {
-              abortController = null;
               if (error.name !== 'AbortError') {
+                abortController = null;
                 throw error;
               }
             })

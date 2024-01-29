@@ -75,7 +75,7 @@
       }
 
       function requestSuggestions(query, fetchOptions) {
-        return fetch('./suggestions.json', fetchOptions)
+        return fetch(`./suggestions.json?query=${query}`, fetchOptions)
           .then(response => response.json())
       }
 
@@ -85,7 +85,7 @@
           abortExisting(
             simulateServer(requestSuggestions)
           )
-        )
+        , 250)
       )
 
       function source(query, populateResults) {
@@ -107,7 +107,7 @@
         inputClasses: "govuk-input"
       })
 
-      const SERVER_LATENCY = 1500;
+      const SERVER_LATENCY = 10;
       function simulateServer(fn) {
         return function(query, ...args) { 
           return new Promise(resolve => {
@@ -146,10 +146,8 @@
       let abortController;
       function abortExisting(fn) {
         return function(...args) {
-
           if (abortController) {
             abortController.abort();
-            abortController = null;
           }
 
           abortController = new AbortController();
@@ -159,8 +157,8 @@
               abortController = null;
               return result;
             }, error => {
-              abortController = null;
               if (error.name !== 'AbortError') {
+                abortController = null;
                 throw error;
               }
             })

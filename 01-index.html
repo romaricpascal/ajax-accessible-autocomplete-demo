@@ -64,7 +64,7 @@
       const id = 'autocomplete-default'
 
       function requestSuggestions(query) {
-        return fetch('./suggestions.json')
+        return fetch(`./suggestions.json?query=${query}`)
           .then(response => response.json())
       }
 
