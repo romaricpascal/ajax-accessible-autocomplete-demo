@@ -1,0 +1,9 @@
+{
+  "name": "ajax-accessible-autocomplete-demo",
+  "author": "Romaric Pascal <romaric.pascal@digital.cabinet-office.gov.uk",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^3.0.2"
+  }
+}
