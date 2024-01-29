@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>When things don't go quite right</title>
+    <style>
+      /* Example page specific styling. */
+      html {
+        color: #111;
+        background: #FFF;
+        font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+      }
+
+      body {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        line-height: normal;
+      }
+
+      label {
+        display: block;
+        margin-bottom: .5rem;
+      }
+
+      code {
+        padding-left: .5em;
+        padding-right: .5em;
+        background: #EFEFEF;
+        font-weight: normal;
+        font-family: monospace;
+      }
+
+      main {
+        max-width: 40em;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    </style>
+    <link rel="stylesheet" href="/vendor/accessible-autocomplete.min.css">
+  </head>
+  <body>
+    <main>
+      <h1>When things don't go quite right</h1>
+
+      <form action="form-single.html" method="get">
+        <label for="last-location">What was the last country you visited?</label>
+        <div class="autocomplete-wrapper">
+        </div>
+
+        <button type="submit">Submit your answer</button>
+      </form>
+    </main>
+
+    <script type="text/javascript" src="/vendor/accessible-autocomplete.min.js"></script>
+
+    <script type="text/javascript">
+      const element = document.querySelector('.autocomplete-wrapper')
+      const id = 'autocomplete-default'
+
+      let status;
+      function tNoResults() {
+        if (status === 'loading') {
+          return 'Loading suggestions...'
+        } else if (status === 'error') {
+          return 'Sorry, an error occurred'
+        }else {
+          return 'No results found'
+        }
+      }
+
+      function requestSuggestions(query, fetchOptions) {
+        return fetch(`./suggestions.json?query=${query}`, fetchOptions)
+          .then(response => response.json())
+      }
+
+      // UPDATED
+      const makeRequest = trackErrors(trackLoading(
+        debounce(
+          abortExisting(
+            simulateServer(requestSuggestions)
+          )
+        , 250)
+      ))
+
+      function source(query, populateResults) {
+
+        populateResults([])
+
+        makeRequest(query)
+          .then(options => options && populateResults(options))
+          .catch(error => populateResults([])) 
+      }
+
+      accessibleAutocomplete({
+        element: element,
+        id: id,
+        source: source,
+        tNoResults: tNoResults,
+        menuAttributes: {
+          "aria-labelledby": id
+        },
+        inputClasses: "govuk-input"
+      })
+
+      const SERVER_LATENCY = 10;
+      function simulateServer(fn) {
+        return function(query, ...args) { 
+          return new Promise(resolve => {
+            setTimeout(() => {
+              const suggestions = fn(query, ...args)
+                .then((response) => {
+                  if (query === 'trigger-error') {
+                    throw new Error('Custom error')
+                  }
+                  return response;
+                })
+                .then(countries => {
+                  return countries.filter(country => country.indexOf(query) !== -1)
+                })
+
+              resolve(suggestions)
+            }, SERVER_LATENCY)
+          })
+        }
+      }
+
+      function trackLoading(fn) {
+        return function(...args) {
+          status = 'loading';
+          return fn(...args)
+            .then(result => {
+              status = null;
+              return result
+            }, error => {
+              status = null;
+              throw error
+            })
+        }
+      }
+
+      let abortController;
+      function abortExisting(fn) {
+        return function(...args) {
+          if (abortController) {
+            abortController.abort();
+          }
+
+          abortController = new AbortController();
+
+          return fn(...args, {signal: abortController.signal})
+            .then(result => {
+              abortController = null;
+              return result;
+            }, error => {
+              if (error.name !== 'AbortError') {
+                abortController = null;
+                throw error;
+              }
+            })
+        }
+      }
+
+      function debounce(fn, wait) {
+        let timeout
+        return function (...args) {
+          return new Promise(resolve => {
+            clearTimeout(timeout)
+
+            const later = function () {
+              timeout = null
+              resolve(fn(...args))
+            }
+            timeout = setTimeout(later, wait)
+          }) 
+        }
+      }
+
+      // NEW
+      function trackErrors(fn) {
+        return function(...args) {
+          return fn(...args)
+            .catch(error => {
+              status = 'error'
+              throw error
+            })
+        }
+      }
+    </script>
+  </body>
+</html>
