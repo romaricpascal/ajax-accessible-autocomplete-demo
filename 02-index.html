@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Remote request</title>
+    <title>Simulate server</title>
     <style>
       /* Example page specific styling. */
       html {
@@ -46,7 +46,7 @@
   </head>
   <body>
     <main>
-      <h1>Remote request</h1>
+      <h1>Simulate server</h1>
 
       <form action="form-single.html" method="get">
         <label for="last-location">What was the last country you visited?</label>
@@ -70,9 +70,11 @@
           .then(response => response.json())
       }
 
+      const makeRequest = simulateServer(requestSuggestions)
+
       // This is the API of the autocomplete
       function source(query, populateResults) {
-        requestSuggestions(query)
+        makeRequest(query)
           .then(populateResults)
       }
 
@@ -85,6 +87,35 @@
         },
         inputClasses: "govuk-input"
       })
+
+      // Technically, it'd be the server doing the filtering but for lack of
+      // server, we're requesting the whole list and filter client-side.
+      // Similarly, we'll use a specific query to trigger error for demo
+      // purpose, which will be easier than going in the devtools and making the
+      // request error We'll also simulate that the server takes a little time
+      // to respond to make things more visible in the UI
+      const SERVER_LATENCY = 1500;
+      function simulateServer(fn) {
+        return function(query, ...args) { 
+          return new Promise(resolve => {
+            setTimeout(() => {
+              const suggestions = fn(query, ...args)
+                .then((response) => {
+                  if (query === 'trigger-error') {
+                    throw new Error('Custom error')
+                  }
+                  return response;
+                })
+                .then(countries => {
+                  return countries.filter(country => country.indexOf(query) !== -1)
+                })
+
+              resolve(suggestions)
+            }, SERVER_LATENCY)
+          })
+        }
+      }
+
     </script>
   </body>
 </html>
