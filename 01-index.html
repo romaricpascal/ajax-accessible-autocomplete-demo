@@ -63,14 +63,11 @@
       const element = document.querySelector('.autocomplete-wrapper')
       const id = 'autocomplete-default'
 
-      // This is the API of the service, it "speaks"
-      // plain JavaScript concepts
       function requestSuggestions(query) {
         return fetch('./suggestions.json')
           .then(response => response.json())
       }
 
-      // This is the API of the autocomplete
       function source(query, populateResults) {
         requestSuggestions(query)
           .then(populateResults)

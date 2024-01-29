@@ -63,16 +63,15 @@
       const element = document.querySelector('.autocomplete-wrapper')
       const id = 'autocomplete-default'
 
-      // This is the API of the service, it "speaks"
-      // plain JavaScript concepts
       function requestSuggestions(query) {
         return fetch('./suggestions.json')
           .then(response => response.json())
       }
 
+      // NEW
       const makeRequest = simulateServer(requestSuggestions)
 
-      // This is the API of the autocomplete
+      // UPDATED
       function source(query, populateResults) {
         makeRequest(query)
           .then(populateResults)
@@ -88,12 +87,7 @@
         inputClasses: "govuk-input"
       })
 
-      // Technically, it'd be the server doing the filtering but for lack of
-      // server, we're requesting the whole list and filter client-side.
-      // Similarly, we'll use a specific query to trigger error for demo
-      // purpose, which will be easier than going in the devtools and making the
-      // request error We'll also simulate that the server takes a little time
-      // to respond to make things more visible in the UI
+      // NEW
       const SERVER_LATENCY = 1500;
       function simulateServer(fn) {
         return function(query, ...args) { 
