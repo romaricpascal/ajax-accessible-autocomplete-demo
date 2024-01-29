@@ -63,15 +63,19 @@
       const element = document.querySelector('.autocomplete-wrapper')
       const id = 'autocomplete-default'
 
+      
       function requestSuggestions(query) {
         return fetch(`./suggestions.json?query=${query}`)
           .then(response => response.json())
       }
+      // Server API
 
+      
       function source(query, populateResults) {
         requestSuggestions(query)
           .then(populateResults)
       }
+      // Autocomplete source
 
       accessibleAutocomplete({
         element: element,

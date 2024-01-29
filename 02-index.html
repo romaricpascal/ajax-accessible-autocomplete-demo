@@ -68,14 +68,16 @@
           .then(response => response.json())
       }
 
-      // NEW
+      
       const makeRequest = simulateServer(requestSuggestions)
+      // Compose functions
 
-      // UPDATED
       function source(query, populateResults) {
+        
         makeRequest(query)
           .then(populateResults)
       }
+      // Use as source
 
       accessibleAutocomplete({
         element: element,
@@ -87,7 +89,7 @@
         inputClasses: "govuk-input"
       })
 
-      // NEW
+      
       const SERVER_LATENCY = 1500;
       function simulateServer(fn) {
         return function(query, ...args) { 
@@ -109,6 +111,7 @@
           })
         }
       }
+      // Simulate a server
 
     </script>
   </body>

@@ -62,8 +62,7 @@
     <script type="text/javascript">
       const element = document.querySelector('.autocomplete-wrapper')
       const id = 'autocomplete-default'
-
-      // NEW
+    
       let status;
       function tNoResults() {
         if (status === 'loading') {
@@ -74,30 +73,29 @@
           return 'No results found'
         }
       }
+      // Custom translation function
 
       function requestSuggestions(query) {
         return fetch(`./suggestions.json?query=${query}`)
           .then(response => response.json())
       }
 
-      // UPDATED
       const makeRequest = trackLoading(simulateServer(requestSuggestions))
+      // Compose functions
 
-      // UPDATED
       function source(query, populateResults) {
-
-        populateResults([])
-
+        // populateResults([])
+        // Reset results
         makeRequest(query)
           .then(populateResults)
       }
 
-      // UPDATED
       accessibleAutocomplete({
         element: element,
         id: id,
         source: source,
         tNoResults: tNoResults,
+        // Set up translations
         menuAttributes: {
           "aria-labelledby": id
         },
@@ -126,7 +124,6 @@
         }
       }
 
-      // NEW
       function trackLoading(fn) {
         return function(...args) {
           status = 'loading';
@@ -140,6 +137,7 @@
             })
         }
       }
+      // Track loading
     </script>
   </body>
 </html>

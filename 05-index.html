@@ -166,7 +166,7 @@
       }
 
       // NEW
-      function debounce(fn, wait) {
+      function debounce(fn, delay) {
         let timeout
         return function (...args) {
           return new Promise(resolve => {
@@ -176,10 +176,11 @@
               timeout = null
               resolve(fn(...args))
             }
-            timeout = setTimeout(later, wait)
+            timeout = setTimeout(later, delay)
           }) 
         }
       }
+      // Debounce function
     </script>
   </body>
 </html>
