@@ -33,6 +33,11 @@
       }
     },
     {
+      "file": "bs-config.js",
+      "description": "# A little server\n\nFilters out a list of country based on the `query` search param",
+      "line": 40
+    },
+    {
       "file": "01-index.html",
       "description": "# API for communicating with the server\n\nThis one uses `fetch` but it could use any AJAX API (native XMLHttpRequest, axios,...)",
       "pattern": "Server API"
@@ -48,21 +53,6 @@
       "pattern": "source:"
     },
     {
-      "file": "02-index.html",
-      "description": "## Compose functions\n\nThis keeps responsibilities nice and tidy. `requestSuggestions` sends away, `simulateServer` simulates a server.",
-      "pattern": "Compose functions"
-    },
-    {
-      "file": "02-index.html",
-      "description": "## Simulate a server\n",
-      "pattern": "Simulate a server"
-    },
-    {
-      "file": "02-index.html",
-      "description": "# Let's not forget...\n\nTo update the source to use our new composed function\n\n## [Let's see the result](http://localhost:3000/02-index.html)",
-      "pattern": "Use as source"
-    },
-    {
       "file": "03-index.html",
       "description": "# Custom translation function",
       "pattern": "Custom translation function"
@@ -74,54 +64,63 @@
     },
     {
       "file": "03-index.html",
-      "description": "# Track loading\n\n```js\n      function trackLoading(fn) {\n        return function(...args) {\n          status = 'loading';\n          return fn(...args)\n            .then(result => {\n              status = null;\n              return result\n            }, error => {\n              status = null;\n              throw error\n            })\n        }\n      }\n```",
-      "pattern": "Track loading"
-    },
-    {
-      "file": "03-index.html",
       "description": "# Compose functions\n\n## [Let's have a look](http://localhost:3000/03-index.html)",
       "pattern": "Compose functions"
     },
     {
       "file": "03-index.html",
-      "description": "# Reset results\n\n```js\npopulateResults([])\n```",
-      "pattern": "Reset results"
+      "description": "# Track loading\n\n```js\n      function trackLoading(fn) {\n        return function(...args) {\n          status = 'loading';\n          return fn(...args)\n            .then(result => {\n              status = null;\n              return result\n            }, error => {\n              status = null;\n              throw error\n            })\n        }\n      }\n```",
+      "pattern": "Track loading"
+    },
+    {
+      "file": "03-index.html",
+      "description": "# Update request\n\n## [Let's have a look](http://localhost:3000/03-index.html)",
+      "pattern": "Update request"
+    },
+    {
+      "file": "04-index.html",
+      "description": "# Update composed function",
+      "pattern": "Compose functions"
     },
     {
       "file": "04-index.html",
       "description": "# Cancel the request in flight",
-      "line": 166
+      "pattern": "Cancel the request in flight"
     },
     {
       "file": "04-index.html",
       "description": "# Receive the AbortSignal",
-      "line": 82
+      "pattern": "Receive the AbortSignal"
     },
     {
       "file": "04-index.html",
-      "description": "# Update composed function\n\n## [Let's have a look](http://localhost:3000/04-index.html)",
-      "line": 89
+      "description": "# Update wiring to autocomplete\n\n## [Let's have a look](http://localhost:3000/04-index.html)",
+      "pattern": "Populate results"
+    },
+    {
+      "file": "05-index.html",
+      "description": "# Update composed function",
+      "pattern": "Compose functions"
     },
     {
       "file": "05-index.html",
       "description": "# Debounce function",
-      "line": 183
-    },
-    {
-      "file": "05-index.html",
-      "description": "# Update composed function\n\n## [Let's have a look](http://localhost:3000/05-index.html)",
-      "line": 89
-    },
-    {
-      "file": "06-index.html",
-      "description": "# Track errors",
-      "line": 193
+      "pattern": "Debounce function"
     },
     {
       "file": "06-index.html",
       "description": "# Compose functions one last time",
-      "line": 90
+      "pattern": "Compose functions"
+    },
+    {
+      "file": "06-index.html",
+      "description": "# Track errors",
+      "pattern": "Track errors"
+    },
+    {
+      "file": "06-index.html",
+      "description": "# Make sure the error displays\n\n## [Let's have a look](http://localhost:3000/06-index.html)",
+      "pattern": "Display error"
     }
-  ],
-  "ref": "3a65675fee0ccac56370b6eabddaa2f42f1ea68e"
+  ]
 }

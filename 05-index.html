@@ -79,14 +79,14 @@
           .then(response => response.json())
       }
 
-      // UPDATED
       const makeRequest = trackLoading(
         debounce(
           abortExisting(
-            simulateServer(requestSuggestions)
+            requestSuggestions
           )
         , 250)
       )
+      // Compose functions
 
       function source(query, populateResults) {
 
@@ -106,28 +106,6 @@
         },
         inputClasses: "govuk-input"
       })
-
-      const SERVER_LATENCY = 10;
-      function simulateServer(fn) {
-        return function(query, ...args) { 
-          return new Promise(resolve => {
-            setTimeout(() => {
-              const suggestions = fn(query, ...args)
-                .then((response) => {
-                  if (query === 'trigger-error') {
-                    throw new Error('Custom error')
-                  }
-                  return response;
-                })
-                .then(countries => {
-                  return countries.filter(country => country.indexOf(query) !== -1)
-                })
-
-              resolve(suggestions)
-            }, SERVER_LATENCY)
-          })
-        }
-      }
 
       function trackLoading(fn) {
         return function(...args) {
@@ -165,7 +143,6 @@
         }
       }
 
-      // NEW
       function debounce(fn, delay) {
         let timeout
         return function (...args) {

@@ -80,14 +80,15 @@
           .then(response => response.json())
       }
 
-      const makeRequest = trackLoading(simulateServer(requestSuggestions))
+      const makeRequest = trackLoading(requestSuggestions)
       // Compose functions
 
       function source(query, populateResults) {
-        // populateResults([])
-        // Reset results
+        populateResults([])
+        
         makeRequest(query)
           .then(populateResults)
+        // Update request
       }
 
       accessibleAutocomplete({
@@ -101,28 +102,6 @@
         },
         inputClasses: "govuk-input"
       })
-
-      const SERVER_LATENCY = 1500;
-      function simulateServer(fn) {
-        return function(query, ...args) { 
-          return new Promise(resolve => {
-            setTimeout(() => {
-              const suggestions = fn(query, ...args)
-                .then((response) => {
-                  if (query === 'trigger-error') {
-                    throw new Error('Custom error')
-                  }
-                  return response;
-                })
-                .then(countries => {
-                  return countries.filter(country => country.indexOf(query) !== -1)
-                })
-
-              resolve(suggestions)
-            }, SERVER_LATENCY)
-          })
-        }
-      }
 
       function trackLoading(fn) {
         return function(...args) {

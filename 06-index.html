@@ -79,14 +79,17 @@
           .then(response => response.json())
       }
 
-      // UPDATED
-      const makeRequest = trackErrors(trackLoading(
-        debounce(
-          abortExisting(
-            simulateServer(requestSuggestions)
-          )
-        , 250)
-      ))
+      
+      const makeRequest = trackErrors(
+        trackLoading(
+          debounce(
+            abortExisting(
+              requestSuggestions
+            )
+          , 250)
+        )
+      )
+      // Compose functions
 
       function source(query, populateResults) {
 
@@ -94,7 +97,8 @@
 
         makeRequest(query)
           .then(options => options && populateResults(options))
-          .catch(error => populateResults([])) 
+          .catch(error => populateResults([]))
+          // Display error
       }
 
       accessibleAutocomplete({
@@ -107,28 +111,6 @@
         },
         inputClasses: "govuk-input"
       })
-
-      const SERVER_LATENCY = 10;
-      function simulateServer(fn) {
-        return function(query, ...args) { 
-          return new Promise(resolve => {
-            setTimeout(() => {
-              const suggestions = fn(query, ...args)
-                .then((response) => {
-                  if (query === 'trigger-error') {
-                    throw new Error('Custom error')
-                  }
-                  return response;
-                })
-                .then(countries => {
-                  return countries.filter(country => country.indexOf(query) !== -1)
-                })
-
-              resolve(suggestions)
-            }, SERVER_LATENCY)
-          })
-        }
-      }
 
       function trackLoading(fn) {
         return function(...args) {
@@ -181,7 +163,6 @@
         }
       }
 
-      // NEW
       function trackErrors(fn) {
         return function(...args) {
           return fn(...args)
@@ -191,6 +172,7 @@
             })
         }
       }
+      // Track errors
     </script>
   </body>
 </html>
