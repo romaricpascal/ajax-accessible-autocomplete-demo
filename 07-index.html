@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Last one wins!</title>
+    <title>When things don't go quite right</title>
     <style>
       /* Example page specific styling. */
       html {
@@ -46,7 +46,7 @@
   </head>
   <body>
     <main>
-      <h1>Last one wins!</h1>
+      <h1>When things don't go quite right</h1>
 
       <form action="form-single.html" method="get">
         <label for="last-location">What was the last country you visited?</label>
@@ -78,21 +78,30 @@
         return fetch(`./suggestions.json?query=${query}`, fetchOptions)
           .then(response => response.json())
       }
-      // Receive the AbortSignal
-
-      const makeRequest = trackLoading(
-        abortExisting(
-          requestSuggestions
-        )
+ 
+      const makeRequest = compose(
+        trackErrors,
+        trackLoading,
+        debounce(250),
+        abortExisting,
+        requestSuggestions
       )
+
+      function compose(...fns) {
+        fns.reverse().reduce((fn, wrapper) => {
+          return fn ? wrapper(fn) : fn
+        })
+      }
       // Compose functions
 
       function source(query, populateResults) {
+
         populateResults([])
-        
+
         makeRequest(query)
           .then(options => options && populateResults(options))
-        // Populate results
+          .catch(error => populateResults([]))
+          // Display error
       }
 
       accessibleAutocomplete({
@@ -141,7 +150,35 @@
             })
         }
       }
-      // Cancel the request in flight
+
+      function debounce(wait) {
+        return function (fn) {
+          let timeout
+          return function (...args) {
+            return new Promise(resolve => {
+              clearTimeout(timeout)
+
+              const later = function () {
+                timeout = null
+                resolve(fn(...args))
+              }
+              timeout = setTimeout(later, wait)
+            }) 
+          }
+        }
+      }
+      // Configurable higher order functions
+
+      function trackErrors(fn) {
+        return function(...args) {
+          return fn(...args)
+            .catch(error => {
+              status = 'error'
+              throw error
+            })
+        }
+      }
+      // Track errors
     </script>
   </body>
 </html>

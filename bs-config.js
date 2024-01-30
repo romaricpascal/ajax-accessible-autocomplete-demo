@@ -14,7 +14,7 @@
  */
 const countries = require('./suggestions.json');
 
-const LATENCY = 100;
+const LATENCY = 2000;
 module.exports = {
     middleware: [
         {
