@@ -78,7 +78,7 @@
         return fetch(`./suggestions.json?query=${query}`, fetchOptions)
           .then(response => response.json())
       }
- 
+
       const makeRequest = compose(
         trackErrors,
         trackLoading,
@@ -88,8 +88,8 @@
       )
 
       function compose(...fns) {
-        fns.reverse().reduce((fn, wrapper) => {
-          return fn ? wrapper(fn) : fn
+        return fns.reverse().reduce((fn, wrapper) => {
+          return wrapper(fn)
         })
       }
       // Compose functions
