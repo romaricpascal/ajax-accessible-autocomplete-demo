@@ -64,12 +64,12 @@
     },
     {
       "file": "03-index.html",
-      "description": "# Compose functions\n\n## [Let's have a look](http://localhost:3000/03-index.html)",
+      "description": "# Compose functions\n\n## [Higher order functions](https://eloquentjavascript.net/05_higher_order.html)",
       "pattern": "Compose functions"
     },
     {
       "file": "03-index.html",
-      "description": "# Track loading\n\n```js\n      function trackLoading(fn) {\n        return function(...args) {\n          status = 'loading';\n          return fn(...args)\n            .then(result => {\n              status = null;\n              return result\n            }, error => {\n              status = null;\n              throw error\n            })\n        }\n      }\n```",
+      "description": "# Track loading\n",
       "pattern": "Track loading"
     },
     {
@@ -84,7 +84,7 @@
     },
     {
       "file": "04-index.html",
-      "description": "# Cancel the request in flight",
+      "description": "# Cancel the request in flight\n\n[AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)\n[AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)",
       "pattern": "Cancel the request in flight"
     },
     {
